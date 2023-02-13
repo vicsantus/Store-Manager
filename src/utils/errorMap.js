@@ -6,6 +6,8 @@ const errorMap = {
   INVALID_NAME: 404,
   DRIVER_NOT_FOUND: 404,
   TRAVEL_CONFLICT: 409,
+  REQUIRED_NAME: 400,
+  MIN_NAME_CHAR: 422,
 };
 
 const mapError = (type) => errorMap[type] || 500;

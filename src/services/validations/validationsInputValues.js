@@ -10,8 +10,11 @@ const validateId = (id) => {
 };
 
 const validateName = (name) => {
-  const { error } = nameSchema.validate(name);
-  if (error) return { type: 'INVALID_NAME', message: '"name" must be a string' };
+  const { error } = nameSchema.validate({ name });
+  if (error) {
+    const { message, type } = error.details[0];
+    return { type: type === 'any.required' ? 'REQUIRED_NAME' : 'MIN_NAME_CHAR', message };
+  }
 
   return { type: null, message: '' };  
 };
