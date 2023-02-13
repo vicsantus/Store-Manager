@@ -1,4 +1,4 @@
-const { addPassengerSchema, idSchema, addRequestTravelSchema } = require('./schemas');
+const { addPassengerSchema, idSchema, addRequestTravelSchema, nameSchema } = require('./schemas');
 // const { travelModel, driverModel, productsModel } = require('../../models');
 const { travelModel, driverModel } = require('../../models');
 
@@ -7,6 +7,13 @@ const validateId = (id) => {
   if (error) return { type: 'INVALID_VALUE', message: '"id" must be a number' };
   
   return { type: null, message: '' };
+};
+
+const validateName = (name) => {
+  const { error } = nameSchema.validate(name);
+  if (error) return { type: 'INVALID_NAME', message: '"name" must be a string' };
+
+  return { type: null, message: '' };  
 };
 
 const validateNewPassenger = (name, email, phone) => {
@@ -55,4 +62,5 @@ module.exports = {
   validateRequestTravelSchema,
   validateInputValues,
   validateAlreadyDriver,
+  validateName,
 };
