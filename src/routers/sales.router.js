@@ -9,4 +9,8 @@ const router = express.Router();
 
 router.post('/', salesController.createSalesProducts);
 
+router.get('/', salesController.findAllSalesProducts);
+
+router.get('/:id', salesController.findSalesProductsById);
+
 module.exports = router;
