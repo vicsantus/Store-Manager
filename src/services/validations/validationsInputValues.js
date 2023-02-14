@@ -1,6 +1,6 @@
-const { addPassengerSchema, idSchema, addRequestTravelSchema, nameSchema } = require('./schemas');
+const { idSchema, nameSchema, saleProductsSchema } = require('./schemas');
 // const { travelModel, driverModel, productsModel } = require('../../models');
-const { travelModel, driverModel } = require('../../models');
+// const { travelModel, driverModel } = require('../../models');
 
 const validateId = (id) => {
   const { error } = idSchema.validate(id);
@@ -19,51 +19,58 @@ const validateName = (name) => {
   return { type: null, message: '' };  
 };
 
-const validateNewPassenger = (name, email, phone) => {
-  const { error } = addPassengerSchema
-    .validate({ name, email, phone });
-  if (error) return { type: 'INVALID_VALUE', message: error.message };
+const validateSales = (salesProducts) => {
+  const { error } = saleProductsSchema.validate(salesProducts);
+  if (error) {
+    const { message, type } = error.details[0];
+    return { type, message };
+  }
   
   return { type: null, message: '' };
 };
 
-const validateRequestTravelSchema = (passengerId, startingAddress, endingAddress, waypoints) => {
-  const { error } = addRequestTravelSchema
-    .validate({ passengerId, startingAddress, endingAddress, waypoints });
-  if (error) return { type: 'INVALID_VALUE', message: error.message };
+// const validateNewPassenger = (name, email, phone) => {
+//   const { error } = addPassengerSchema
+//     .validate({ name, email, phone });
+//   if (error) return { type: 'INVALID_VALUE', message: error.message };
+  
+//   return { type: null, message: '' };
+// };
 
-  return { type: null, message: '' };
-};
+// const validateRequestTravelSchema = (passengerId, startingAddress, endingAddress, waypoints) => {
+//   const { error } = addRequestTravelSchema
+//     .validate({ passengerId, startingAddress, endingAddress, waypoints });
+//   if (error) return { type: 'INVALID_VALUE', message: error.message };
 
-const validateInputValues = async ({ travelId, driverId }) => {
-  /* Valida se travelId existe */
-  const travel = await travelModel.findById(travelId);
-  if (!travel) return { type: 'TRAVEL_NOT_FOUND', message: 'travel id not found' };
+//   return { type: null, message: '' };
+// };
 
-  /* Valida se driverId existe */
-  const driver = await driverModel.findById(driverId);
-  if (!driver) return { type: 'DRIVER_NOT_FOUND', message: 'driver id not found' };
+// const validateInputValues = async ({ travelId, driverId }) => {
+//   /* Valida se travelId existe */
+//   const travel = await travelModel.findById(travelId);
+//   if (!travel) return { type: 'TRAVEL_NOT_FOUND', message: 'travel id not found' };
 
-  // const products = await productsModel.findById()
+//   /* Valida se driverId existe */
+//   const driver = await driverModel.findById(driverId);
+//   if (!driver) return { type: 'DRIVER_NOT_FOUND', message: 'driver id not found' };
 
-  return { type: null, message: '' };
-};
+//   // const products = await productsModel.findById()
 
-const validateAlreadyDriver = async (travelId) => {
-  const travel = await travelModel.findById(travelId);
+//   return { type: null, message: '' };
+// };
 
-  if (travel && travel.driverId) {
-    return { type: 'TRAVEL_CONFLICT', message: 'travel already assigned' };
-  }
+// const validateAlreadyDriver = async (travelId) => {
+//   const travel = await travelModel.findById(travelId);
 
-  return { type: null, message: '' };
-};
+//   if (travel && travel.driverId) {
+//     return { type: 'TRAVEL_CONFLICT', message: 'travel already assigned' };
+//   }
+
+//   return { type: null, message: '' };
+// };
 
 module.exports = {
   validateId,
-  validateNewPassenger,
-  validateRequestTravelSchema,
-  validateInputValues,
-  validateAlreadyDriver,
   validateName,
+  validateSales,
 };

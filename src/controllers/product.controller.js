@@ -17,7 +17,7 @@ const getProduct = async (req, res) => {
   return res.status(200).json(message);
 };
 
-const createPassenger = async (req, res) => {
+const createProduct = async (req, res) => {
   const { name } = req.body;
   
   const { type, message } = await productService.createProduct(name);
@@ -30,5 +30,5 @@ const createPassenger = async (req, res) => {
 module.exports = {
   listAllProducts,
   getProduct,
-  createPassenger,
+  createProduct,
 };
