@@ -1,231 +1,141 @@
 const { expect } = require("chai");
 const sinon = require("sinon");
-const { salesService } = require("../../../src/services");
+const { salesService, productService } = require("../../../src/services");
 const {
-  travelModel,
-  waypointModel,
   salesModel,
 } = require("../../../src/models");
 
 const {
-  allPassengers,
-  invalidValue,
-  validName,
-  validEmail,
-  validPhone,
-  travelResponse,
+  findAllSalesProducts,
+  expecificIdMock,
+  makeWrongOneMock,
+  makeWrongTwoMock,
+  makeWrongThreeMock,
+  makeOkMock,
+  returnPromise,
+  makeOkAllMock,
 } = require("./mocks/sales.service.mock");
 
-describe("Verificando service pessoa passageira", function () {
-  describe("listagem de pessoas passageiras", function () {
-    it("retorna a lista completa de pessoas passageiras", async function () {
+describe("Verificando service de sales", function () {
+  describe("listagem de all sales products", function () {
+    it("retorna a lista completa de sales products", async function () {
       // arrange
-      sinon.stub(passengerModel, "findAll").resolves(allPassengers);
+      sinon
+        .stub(salesModel, "findAllSalesProducts")
+        .resolves(findAllSalesProducts);
 
       // act
-      const result = await passengerService.findAll();
+      const result = await salesService.findAllSalesProducts();
 
       // assert
       expect(result.type).to.be.equal(null);
-      expect(result.message).to.deep.equal(allPassengers);
+      expect(result.message).to.deep.equal(findAllSalesProducts);
     });
   });
 
-  // describe("busca de uma pessoa passageira", function () {
-  //   it("retorna um erro caso receba um ID inválido", async function () {
-  //     // arrange: Especificamente nesse it não temos um arranjo pois nesse fluxo o model não é chamado!
+  describe("busca de uma sale expecifica", function () {
+    it("retorna um erro caso receba um ID inválido", async function () {
+      // arrange: Especificamente nesse it não temos um arranjo pois nesse fluxo o model não é chamado!
 
-  //     // act
-  //     const result = await passengerService.findById("a");
+      // act
+      const result = await salesService.findSalesProductsById("a");
 
-  //     // assert
-  //     expect(result.type).to.equal("INVALID_VALUE");
-  //     expect(result.message).to.equal('"id" must be a number');
-  //   });
+      // assert
+      expect(result.type).to.equal("INVALID_VALUE");
+      expect(result.message).to.equal('"id" must be a number');
+    });
 
-  //   it("retorna um erro caso a pessoa passageira não existe", async function () {
-  //     // arrange
-  //     sinon.stub(passengerModel, "findById").resolves(undefined);
+    it("retorna SALES_NOT_FOUND caso a sale não seja encontrada", async function () {
+      // arrange
+      sinon
+        .stub(salesModel, "findExpecificSalesProductsById")
+        .resolves(null);
 
-  //     // act
-  //     const result = await passengerService.findById(1);
+      // act
+      const result = await salesService.findSalesProductsById(1);
 
-  //     // assert
-  //     expect(result.type).to.equal("PASSENGER_NOT_FOUND");
-  //     expect(result.message).to.equal("Passenger not found");
-  //   });
+      // assert
+      expect(result.type).to.equal("SALES_NOT_FOUND");
+      expect(result.message).to.equal("Sale not found");
+    });
 
-  //   it("retorna a pessoa passageira caso ID existente", async function () {
-  //     // arrange
-  //     sinon.stub(passengerModel, "findById").resolves(allPassengers[0]);
+    it("retorna a sale expecifica", async function () {
+      // arrange
+      sinon
+        .stub(salesModel, "findExpecificSalesProductsById")
+        .resolves(expecificIdMock);
 
-  //     // act
-  //     const result = await passengerService.findById(1);
+      // act
+      const result = await salesService.findSalesProductsById(1);
 
-  //     // assert
-  //     expect(result.type).to.equal(null);
-  //     expect(result.message).to.deep.equal(allPassengers[0]);
-  //   });
-  // });
+      // assert
+      expect(result.type).to.equal(null);
+      expect(result.message).to.equal(expecificIdMock);
+    });
+  });
 
-  // describe("cadastro de uma pessoa passageira com valores inválidos", function () {
-  //   it("retorna um erro ao passar um nome inválido", async function () {
-  //     // arrange: Novamente não precisamos de um arranjo pois esse é um fluxo que não chama o model!
+  describe("cria uma sale expecifica", function () {
+    it("retorna um erro caso não receba um productId", async function () {
+      // arrange
 
-  //     // act
-  //     const result = await passengerService.createPassenger(
-  //       invalidValue,
-  //       validEmail,
-  //       validPhone
-  //     );
+      // act
+      const result = await salesService.createSalesProduct(makeWrongOneMock);
 
-  //     // assert
-  //     expect(result.type).to.equal("INVALID_VALUE");
-  //     expect(result.message).to.equal(
-  //       '"name" length must be at least 3 characters long'
-  //     );
-  //   });
+      // assert
+      expect(result.type).to.equal("IS_REQUIRED");
+      expect(result.message).to.equal('"productId" is required');
+    });
 
-  //   it("retorna um erro ao passar um email inválido", async function () {
-  //     // arrange: Novamente não precisamos de um arranjo pois esse é um fluxo que não chama o model! [2]
-  //     const result = await passengerService.createPassenger(
-  //       validName,
-  //       invalidValue,
-  //       validPhone
-  //     );
+    it("retorna um erro caso não receba um quantity", async function () {
+      // arrange
 
-  //     expect(result.type).to.equal("INVALID_VALUE");
-  //     expect(result.message).to.equal('"email" must be a valid email');
-  //   });
+      // act
+      const result = await salesService.createSalesProduct(makeWrongTwoMock);
 
-  //   it("retorna um erro ao passar um telefone inválido", async function () {
-  //     // arrange: Novamente não precisamos de um arranjo pois esse é um fluxo que não chama o model! [3]
+      // assert
+      expect(result.type).to.equal("IS_REQUIRED");
+      expect(result.message).to.equal('"quantity" is required');
+    });
 
-  //     // act
-  //     const result = await passengerService.createPassenger(
-  //       validName,
-  //       validEmail,
-  //       invalidValue
-  //     );
+    it("retorna um erro caso receba um quantity menor que 1", async function () {
+      // arrange
 
-  //     // assert
-  //     expect(result.type).to.equal("INVALID_VALUE");
-  //     expect(result.message).to.equal(
-  //       '"phone" length must be at least 9 characters long'
-  //     );
-  //   });
-  // });
+      // act
+      const result = await salesService.createSalesProduct(makeWrongThreeMock);
 
-  // describe("cadastro de uma pessoa passageira com valores válidos", function () {
-  //   it("retorna o ID da pessoa passageira cadastrada", async function () {
-  //     // arrange
-  //     sinon.stub(passengerModel, "insert").resolves(1);
-  //     sinon.stub(passengerModel, "findById").resolves(allPassengers[0]);
+      // assert
+      expect(result.type).to.equal("INVALID_VALUE");
+      expect(result.message).to.equal(
+        '"quantity" must be greater than or equal to 1'
+      );
+    });
 
-  //     // act
-  //     const result = await passengerService.createPassenger(
-  //       validName,
-  //       validEmail,
-  //       validPhone
-  //     );
+    it("retorna um erro caso receba um productid inexistente", async function () {
+      // arrange
+      sinon.stub(productService, "findById").resolves(returnPromise);
 
-  //     // assert
-  //     expect(result.type).to.equal(null);
-  //     expect(result.message).to.deep.equal(allPassengers[0]);
-  //   });
-  // });
+      // act
+      const result = await salesService.createSalesProduct(makeOkMock);
 
-  // describe("solicitação de viagem", function () {
-  //   it("sem pontos de parada é realizada com sucesso", async function () {
-  //     // arrange
-  //     sinon.stub(passengerModel, "findById").resolves(true); // retorna verdadeiro sinalizando que o passageiro existe
-  //     sinon.stub(travelModel, "insert").resolves(1); // retorna travel com ID 1
-  //     sinon.stub(travelModel, "findById").resolves(travelResponse);
-  //     const WAITING_DRIVER = 1;
-  //     const passenger = {
-  //       id: 1,
-  //       startingAddress: "Rua X",
-  //       endingAddress: "Rua Y",
-  //     };
-  //     // act
-  //     const travel = await passengerService.requestTravel(
-  //       passenger.id,
-  //       passenger.startingAddress,
-  //       passenger.endingAddress
-  //     );
-  //     // assert
-  //     expect(travel.message).to.deep.equal({
-  //       id: 1,
-  //       passengerId: 1,
-  //       driverId: null,
-  //       travelStatusId: WAITING_DRIVER,
-  //       startingAddress: "Rua X",
-  //       endingAddress: "Rua Y",
-  //       requestDate: "2022-08-24T03:04:04.374Z",
-  //     });
-  //   });
+      // assert
+      expect(result.type).to.equal("PRODUCT_NOT_FOUND");
+      expect(result.message).to.equal("Product not found");
+    });
 
-  //   it("com pontos de parada é realizada com sucesso", async function () {
-  //     // arrange
-  //     sinon.stub(passengerModel, "findById").resolves(true); // retorna verdadeiro sinalizando que o passageiro existe
-  //     sinon.stub(travelModel, "insert").resolves(1); // retorna travel com ID 1
-  //     sinon.stub(travelModel, "findById").resolves(travelResponse);
-  //     sinon.stub(waypointModel, "insert").resolves(1); // retorna waypoint com ID 1
-  //     const WAITING_DRIVER = 1;
-  //     const passenger = {
-  //       id: 1,
-  //       startingAddress: "Rua X",
-  //       endingAddress: "Rua Y",
-  //       waypoints: [
-  //         {
-  //           address: "Rua Z",
-  //           stopOrder: 1,
-  //         },
-  //       ],
-  //     };
+    it("retorna corretamente o que se pede", async function () {
+      // arrange
+      sinon.stub(salesModel, "insertSale").resolves(99);
+      sinon.stub(salesModel, "insertSalesProducts").resolves(makeOkMock);
+      sinon.stub(salesModel, "findSalesProductsById").resolves(makeOkMock);
 
-  //     // act
-  //     const travel = await passengerService.requestTravel(
-  //       passenger.id,
-  //       passenger.startingAddress,
-  //       passenger.endingAddress,
-  //       passenger.waypoints
-  //     );
+      // act
+      const result = await salesService.createSalesProduct(makeOkMock);
 
-  //     // assert
-  //     expect(travel.message).to.deep.equal({
-  //       id: 1,
-  //       passengerId: 1,
-  //       driverId: null,
-  //       travelStatusId: WAITING_DRIVER,
-  //       startingAddress: "Rua X",
-  //       endingAddress: "Rua Y",
-  //       requestDate: "2022-08-24T03:04:04.374Z",
-  //     });
-  //   });
-
-  //   it("com mesmo local de origem e destino é rejeitada", async function () {
-  //     // arrange
-  //     const passenger = {
-  //       id: 1,
-  //       startingAddress: "Rua X",
-  //       endingAddress: "Rua X",
-  //     };
-
-  //     // act
-  //     const error = await passengerService.requestTravel(
-  //       passenger.id,
-  //       passenger.startingAddress,
-  //       passenger.endingAddress
-  //     );
-
-  //     // assert
-  //     expect(error.type).to.equal("INVALID_VALUE");
-  //     expect(error.message).to.equal(
-  //       '"endingAddress" contains an invalid value'
-  //     );
-  //   });
-  // });
+      // assert
+      expect(result.type).to.equal(null);
+      expect(result.message).to.be.deep.equal(makeOkAllMock);
+    });
+  });
 
   afterEach(function () {
     sinon.restore();
