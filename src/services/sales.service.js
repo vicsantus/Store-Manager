@@ -22,7 +22,6 @@ const schema = require('./validations/validationsInputValues');
 //   return { type: null, message: product };
 // };
 
-// eslint-disable-next-line max-lines-per-function
 const createSalesProduct = async (sales) => {
   const error = schema.validateSales(sales);
   if (error.type) return error;
@@ -37,12 +36,8 @@ const createSalesProduct = async (sales) => {
       }; 
     }
   const newSaleId = await salesModel.insertSale();
-  // await sales.forEach(async (sale) => {
-  //   await ;
-  // });
-  const newSalesProductsId = await salesModel.insertSalesProducts(sales, newSaleId);
+  await salesModel.insertSalesProducts(sales, newSaleId);
   const newSalesProducts = await salesModel.findSalesProductsById(newSaleId);
-  console.log(newSalesProductsId);
   return { type: null, message: { id: newSaleId, itemsSold: newSalesProducts } };
 };
 
