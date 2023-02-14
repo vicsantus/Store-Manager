@@ -22,7 +22,15 @@ const validateName = (name) => {
 const validateSales = (salesProducts) => {
   const { error } = saleProductsSchema.validate(salesProducts);
   if (error) {
-    const { message, type } = error.details[0];
+    let { message, type } = error.details[0];
+    [, message] = message.split('.');
+    message = '"'.concat(message);
+    if (type === 'any.required') {
+      type = 'IS_REQUIRED';
+    }
+    if (type === 'number.min') {
+      type = 'INVALID_VALUE';
+    }
     return { type, message };
   }
   

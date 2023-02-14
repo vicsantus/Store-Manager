@@ -25,19 +25,34 @@ const insertSale = async () => {
   return insertId;
 };
 
-const insertSalesProducts = async (sale, saleId) => {
-   const columns = Object.keys(snakeize(sale)).join(', ');
-
-  const placeholders = Object.keys(sale)
-    .map((_key) => '?')
-    .join(', ');
-
-  const [{ insertId }] = await connection.execute(
-    `INSERT INTO sales_products (sale_id, ${columns}) VALUE (?, ${placeholders})`,
-    [saleId, ...Object.values(sale)],
+const findSalesProductsById = async (id) => {
+  const [result] = await connection.execute(
+    'SELECT product_id, quantity FROM sales_products WHERE sale_id = ?;',
+    [id],
   );
+  console.log(result);
+  return camelize(result);
+};
 
-  return insertId;
+const insertSalesProducts = async (sales, saleId) => {
+  const [sale] = sales;
+  const columns = Object.keys(snakeize(sale)).join(', ');
+
+  // const placeholders = Object.keys(sale)
+  //   .map((_key) => '?')
+  //   .join(', ');
+
+  const allSalesMap = sales.map((sal) => [saleId, ...Object.values(sal)]);
+  // const [{ insertId }] = await connection.execute(
+  //   `INSERT INTO sales_products (sale_id, ${columns}) VALUE (?, ${placeholders})`,
+  //   [saleId, ...Object.values(sale)],
+  // );
+  const [result] = await connection.query(
+    `INSERT INTO sales_products (sale_id, ${columns}) VALUE ?`,
+    [allSalesMap],
+  );
+  
+  return camelize(result);
 };
 
 module.exports = {
@@ -45,4 +60,5 @@ module.exports = {
   findSaleById,
   insertSalesProducts,
   insertSale,
+  findSalesProductsById,
 };

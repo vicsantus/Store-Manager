@@ -13,7 +13,7 @@ const nameSchema = Joi.object({
 
 const saleProductsSchema = Joi.array().items(
   Joi.object({
-    productId: idSchema,
+    productId: Joi.number().integer().strict().required(),
     quantity: idSchema,
   }),
 );

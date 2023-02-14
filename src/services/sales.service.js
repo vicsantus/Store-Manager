@@ -37,10 +37,13 @@ const createSalesProduct = async (sales) => {
       }; 
     }
   const newSaleId = await salesModel.insertSale();
-  sales.forEach(async (sale) => {
-    await salesModel.insertSalesProducts(sale, newSaleId);
-  });
-  return { type: null, message: { id: newSaleId, itemsSold: sales } };
+  // await sales.forEach(async (sale) => {
+  //   await ;
+  // });
+  const newSalesProductsId = await salesModel.insertSalesProducts(sales, newSaleId);
+  const newSalesProducts = await salesModel.findSalesProductsById(newSaleId);
+  console.log(newSalesProductsId);
+  return { type: null, message: { id: newSaleId, itemsSold: newSalesProducts } };
 };
 
 module.exports = {
