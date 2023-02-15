@@ -156,6 +156,37 @@ describe("Teste de unidade do productController", function () {
     });
   });
 
+  describe("Deleta um produto expecifico", function () {
+    it("quando deleta o produto corretamente", async function () {
+      const res = {};
+      const req = { params: { id: 939393 } };
+      res.sendStatus = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "deleteById")
+        .resolves({ type: null, message: [] });
+
+      await productController.deleteProduct(req, res);
+
+      expect(res.sendStatus).to.have.been.calledWith(204);
+    });
+
+    it("quando não deleta o produto corretamente", async function () {
+      const res = {};
+      const req = { params: { id: 939393 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "deleteById")
+        .resolves({ type: "null", message: [] });
+
+      await productController.deleteProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(500);
+      expect(res.json).to.have.been.calledWith({ message: [] });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
