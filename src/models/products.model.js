@@ -42,7 +42,14 @@ const deleteProduct = async (productId) =>
   connection.execute(
   'DELETE FROM products WHERE id = ?;',
   [productId],
-);
+  );
+
+const findByQuery = async (query) => {
+  const [result] = await connection.execute(
+    'SELECT * FROM StoreManager.products WHERE name LIKE ?;', [`${query}%`],
+  );
+  return camelize(result);
+};
 
 module.exports = {
   findAll,
@@ -50,4 +57,5 @@ module.exports = {
   insert,
   updateById,
   deleteProduct,
+  findByQuery,
 };

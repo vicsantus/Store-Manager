@@ -2,14 +2,6 @@ const camelize = require('camelize');
 const snakeize = require('snakeize');
 const connection = require('./connection');
 
-// const findSaleById = async (id) => {
-//   const [result] = await connection.execute(
-//     'SELECT * FROM sales_products WHERE sale_id = ?',
-//     [id],
-//   );
-//   return camelize(result); 
-// };
-
 const insertSale = async () => {
    const [{ insertId }] = await connection.execute(
     'INSERT INTO sales () VALUE ()',
@@ -68,11 +60,28 @@ const insertSalesProducts = async (sales, saleId) => {
   return camelize(result);
 };
 
+const deleteSaleProduct = async (saleId) => {
+  const [{ affectedRows }] = await connection.execute(
+    'DELETE FROM sales_products WHERE sale_id = ?;',
+    [saleId],
+  );
+  return affectedRows;
+};
+
+const deleteSale = async (saleId) => {
+  const [{ affectedRows }] = await connection.execute(
+    'DELETE FROM sales WHERE id = ?;',
+    [saleId],
+  );
+  return affectedRows;
+};
+
 module.exports = {
-  // findSaleById,
   insertSalesProducts,
   insertSale,
   findSalesProductsById,
   findAllSalesProducts,
   findExpecificSalesProductsById,
+  deleteSaleProduct,
+  deleteSale,
 };

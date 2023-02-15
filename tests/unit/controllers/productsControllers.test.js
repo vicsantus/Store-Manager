@@ -187,6 +187,23 @@ describe("Teste de unidade do productController", function () {
     });
   });
 
+  describe("Encontra um produto expecifico pelo nome em query", function () {
+    it("quando encontra o produto corretamente", async function () {
+      const res = {};
+      const req = { query: { q: 'Jéssica' } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "findByQuery")
+        .resolves({ type: null, message: [] });
+
+      await productController.findByQuery(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([]);
+    });
+  })
+
   afterEach(function () {
     sinon.restore();
   });
