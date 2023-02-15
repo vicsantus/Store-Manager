@@ -60,6 +60,102 @@ describe("Teste de unidade do productController", function () {
     });
   });
 
+  describe("Buscando um produto expecifico", function () {
+    it("quando encontra o produto corretamente", async function () {
+      const res = {};
+      const req = {params: {id: 1}};
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "findById")
+        .resolves({ type: null, message: [] });
+
+      await productController.getProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith([]);
+    });
+
+    it("quando não encontra o produto corretamente", async function () {
+      const res = {};
+      const req = { params: { id: 1 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "findById")
+        .resolves({ type: 'null', message: [] });
+
+      await productController.getProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(500);
+      expect(res.json).to.have.been.calledWith({ message: [] });
+    });
+  });
+
+  describe("Criando um produto expecifico", function () {
+    it("quando cria o produto corretamente", async function () {
+      const res = {};
+      const req = { body: { name: 'Jéssica' } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "createProduct")
+        .resolves({ type: null, message: [] });
+
+      await productController.createProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.json).to.have.been.calledWith({});
+    });
+
+    it("quando não cria o produto corretamente", async function () {
+      const res = {};
+      const req = { body: { name: "Jéssica" } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "createProduct")
+        .resolves({ type: 'null', message: [] });
+
+      await productController.createProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(500);
+      expect(res.json).to.have.been.calledWith({ message: [] });
+    });
+  });
+
+  describe("Atualizando um produto expecifico", function () {
+    it("quando atualiza o produto corretamente", async function () {
+      const res = {};
+      const req = { body: { name: 'Jéssica' }, params: { id: 939393} };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "updateById")
+        .resolves({ type: null, message: [] });
+
+      await productController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.json).to.have.been.calledWith({});
+    });
+
+    it("quando não atualiza o produto corretamente", async function () {
+      const res = {};
+      const req = { body: { name: "Jéssica" }, params: { id: 939393 } };
+      res.status = sinon.stub().returns(res);
+      res.json = sinon.stub().returns();
+      sinon
+        .stub(productService, "updateById")
+        .resolves({ type: 'null', message: [] });
+
+      await productController.updateProduct(req, res);
+
+      expect(res.status).to.have.been.calledWith(500);
+      expect(res.json).to.have.been.calledWith({ message: [] });
+    });
+  });
+
   afterEach(function () {
     sinon.restore();
   });
