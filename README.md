@@ -8,7 +8,7 @@
 
 Ao clicar no link você pode adicionar as rotas expecificas seguindo o padrão de rotas que você encontra ao final desse README.
 
-https://tfc-frontend-app-production.up.railway.app
+https://store-manager-backend-production.up.railway.app
 
 ## Instalação
 
@@ -39,7 +39,7 @@ Para eliminar os containers após o uso, rode `docker compose down` na raiz do p
 
 ## Rotas
 
-Você pode encontrar nomes, ids (ids são números) e querys validas dentro das seeds.
+Você pode encontrar nomes, ids (ids são números) e querys validas dentro do arquivo seed.sql na raiz do projeto.
 
 - get '/products'
 - get '/products/search?q=Martelo' (Em "Martelo" você pode trocar para um produto valido que deseja encontrar)
