@@ -47,7 +47,8 @@ const deleteProduct = async (productId) =>
 
 const findByQuery = async (query) => {
   const [result] = await connection.execute(
-    `SELECT * FROM ${process.env.MYSQL_DATABASE}.products WHERE name LIKE ?;`, [`${query}%`],
+    `SELECT * FROM ${process.env.MYSQL_DATABASE 
+      || 'StoreManager'}.products WHERE name LIKE ?;`, [`${query}%`],
   );
   return camelize(result);
 };
