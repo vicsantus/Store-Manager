@@ -1,6 +1,7 @@
 const camelize = require('camelize');
 const snakeize = require('snakeize');
 const connection = require('./connection');
+require('dotenv').config();
 
 const findAll = async () => {
   const [result] = await connection.execute(
@@ -46,7 +47,7 @@ const deleteProduct = async (productId) =>
 
 const findByQuery = async (query) => {
   const [result] = await connection.execute(
-    'SELECT * FROM StoreManager.products WHERE name LIKE ?;', [`${query}%`],
+    `SELECT * FROM ${process.env.MYSQL_DATABASE}.products WHERE name LIKE ?;`, [`${query}%`],
   );
   return camelize(result);
 };

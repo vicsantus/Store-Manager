@@ -1,6 +1,7 @@
 const camelize = require('camelize');
 const snakeize = require('snakeize');
 const connection = require('./connection');
+require('dotenv').config();
 
 const insertSale = async () => {
    const [{ insertId }] = await connection.execute(
@@ -15,9 +16,9 @@ const findAllSalesProducts = async () => {
     `SELECT 
     SP.sale_id, S.date, SP.product_id, SP.quantity
 FROM
-    StoreManager.sales_products AS SP
+    ${process.env.MYSQL_DATABASE}.sales_products AS SP
         INNER JOIN
-    StoreManager.sales AS S ON SP.sale_id = S.id`,
+    ${process.env.MYSQL_DATABASE}.sales AS S ON SP.sale_id = S.id`,
   );
 
   return camelize(result);
@@ -28,9 +29,9 @@ const findExpecificSalesProductsById = async (id) => {
     `SELECT 
     S.date, SP.product_id, SP.quantity
 FROM
-    StoreManager.sales_products AS SP
+    ${process.env.MYSQL_DATABASE}.sales_products AS SP
         INNER JOIN
-    StoreManager.sales AS S ON SP.sale_id = S.id
+    ${process.env.MYSQL_DATABASE}.sales AS S ON SP.sale_id = S.id
 WHERE
     SP.sale_id = ?;`,
     [id],
