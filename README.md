@@ -18,6 +18,8 @@ Instalação do projeto
   git clone git@github.com:vicsantus/Store-Manager.git
   cd Store-Manager
   docker compose up -d
+  npm run migration
+  npm run seed
   npm run i && npm start
 ```
 
